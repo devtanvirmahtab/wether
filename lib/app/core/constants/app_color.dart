@@ -28,7 +28,9 @@ class AppColor {
 
   static const gradientLeftColor = Color(0xFFFEE3BC);
   static const gradientRightColor = Color(0xFFF39876);
+  static const textColor1 = Color(0xFF303345);
   static const textColor = Color(0xFF9A938C);
+  static const textColor2 = Color(0xFFD6996B);
 
   static const secondaryColor2 = Color(0xFFD8EEFF);
   static const purpleColor = Color(0xFF9B4D9D);
@@ -45,7 +47,7 @@ class AppColor {
   static const darkPurple = Color(0xFF12101F);
   static const purple = Color(0xFF5C3BFF);
   static const dotIndicatorColor = Color(0xFF0042E0);
-  static const black = Color(0xFF091C32);
+  static const black = Color(0xFF1B1919);
   static const blackPure = Color(0xFF000000);
   static const micBackgroundColor = Color(0xffF2F2F2);
   static const iconColor = Color(0xff222222);
