@@ -13,6 +13,7 @@ class NextDaysView extends GetView<NextDaysController> {
 
   @override
   Widget build(BuildContext context) {
+    print(controller.paradfd.value);
     return Scaffold(
       body: Container(
         width: Get.width,
@@ -23,82 +24,27 @@ class NextDaysView extends GetView<NextDaysController> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                gapH(30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: (){
-                        Get.back();
-                      },
-                      child: const Icon(
-                        Icons.arrow_back_rounded,
-                        size: 30,
-                      ),
-                    ),
-                    Text(
-                      'Next 7 Days',
-                      style: text18Style(
-                        isWeight500: true,
-                        color: AppColor.secondaryColor.withOpacity(0.8)
-                      ),
-                    ),
-                    Container(
-                      width: 20,
-                    ),
-                  ],
-                ),
-                gapH(30),
-                header(),
-                ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColor.white.withOpacity(0.25),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Thursday',
-                            style: text16Style(),
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                '21',
-                                style: text16Style(),
-                              ),
-                              gapW(15),
-                              Image.asset(icon4),
-                            ],
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return gapH(10);
-                  },
-                  itemCount: 5,
-                ),
-              ],
-            ),
+            child: Obx(() {
+              return Column(
+                children: [
+                  gapH(30),
+                  title(),
+                  gapH(30),
+                  tomorrowCard(),
+                  gapH(10),
+                  dayList(),
+                  gapH(10),
+                ],
+              );
+            }),
           ),
         ),
       ),
     );
   }
 
-  Widget header() {
+  Widget tomorrowCard() {
+    final data = controller.nextDays.value;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.4),
@@ -118,7 +64,11 @@ class NextDaysView extends GetView<NextDaysController> {
                   'Tomorrow',
                   style: text16Style(),
                 ),
-                Image.asset(icon5),
+                Image.asset(
+                  weatherStatusImage(data.weathercode?[1] ?? 0),
+                  height: 70,
+                  width: 70,
+                ),
               ],
             ),
           ),
@@ -127,11 +77,12 @@ class NextDaysView extends GetView<NextDaysController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              iconText(image: icon1, text: '1cm'),
+              iconText(image: icon1, text: '${data.rainSum?[1] ?? 0}mm'),
               gapW(20),
-              iconText(image: icon2, text: '15 km/h'),
+              iconText(
+                  image: icon2, text: '${data.windspeed10mMax?[1] ?? 0} km/h'),
               gapW(20),
-              iconText(image: icon3, text: '50%'),
+              iconText(image: icon3, text: '${data.temperature2mMax?[1] ?? 0}°C'),
             ],
           ),
           gapH(20),
@@ -157,6 +108,80 @@ class NextDaysView extends GetView<NextDaysController> {
           style: text16Style(),
         ),
       ],
+    );
+  }
+
+  Widget title() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        InkWell(
+          onTap: () {
+            Get.back();
+          },
+          child: const Icon(
+            Icons.arrow_back_rounded,
+            size: 30,
+          ),
+        ),
+        Text(
+          'Next 7 Days',
+          style: text18Style(
+              isWeight500: true,
+              color: AppColor.secondaryColor.withOpacity(0.8)),
+        ),
+        Container(
+          width: 20,
+        ),
+      ],
+    );
+  }
+
+  Widget dayList() {
+    return ListView.separated(
+      itemCount: controller.nextDays.value.time?.length ?? 0,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final data = controller.nextDays.value.temperature2mMax?[index];
+        final weatherCode = controller.nextDays.value.weathercode?[index];
+        final day = controller.nextDays.value.time?[index];
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 10,
+          ),
+          decoration: BoxDecoration(
+            color: AppColor.white.withOpacity(0.25),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                dayFormat(time: day ?? DateTime.now().toString()),
+                style: text16Style(),
+              ),
+              Row(
+                children: [
+                  Text(
+                    '${data} °C',
+                    style: text16Style(),
+                  ),
+                  gapW(15),
+                  Image.asset(
+                    weatherStatusImage(weatherCode ?? 0),
+                    height: 40,
+                    width: 50,
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return gapH(10);
+      },
     );
   }
 }

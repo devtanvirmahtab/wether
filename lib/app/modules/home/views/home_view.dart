@@ -21,31 +21,33 @@ class HomeView extends GetView<HomeController> {
           gradient: AppColor.bgGradient,
         ),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              gapH(40),
-              searchAndMenu(),
-              gapH(20),
-              cityAndDate(),
-              gapH(20),
-              conditionAndTemperature(),
-              gapH(20),
-              statusCard(),
-              gapH(20),
-              hourlyTitle(),
-              gapH(20),
-              hourlyList(),
-              gapH(20),
-            ],
-          ),
+          child: Obx(() {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                gapH(40),
+                searchAndMenu(),
+                gapH(20),
+                cityAndDate(),
+                gapH(20),
+                conditionAndTemperature(),
+                gapH(20),
+                statusCard(),
+                gapH(20),
+                hourlyTitle(),
+                gapH(20),
+                hourlyList(),
+                gapH(20),
+              ],
+            );
+          }),
         ),
       ),
     );
   }
 
-  Widget searchAndMenu(){
+  Widget searchAndMenu() {
     return HorizontalPadding(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,18 +58,20 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
-  
-  Widget cityAndDate(){
+
+  Widget cityAndDate() {
+    final data = controller.currentWeather.value.current;
+    print(controller.currentWeather.value.toJson());
     return HorizontalPadding(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Stockholm, \nSweden',
+            data?.isDay == 0 ? 'Night' : 'Day',
             style: text18Style(fontSize: 20),
           ),
           Text(
-            'Tue, Jun 30',
+            formatDate(time: data?.time ?? DateTime.now().toString()),
             style: text12Style(
               color: AppColor.textColor,
             ),
@@ -77,69 +81,72 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget conditionAndTemperature(){
-    return  Row(
+  Widget conditionAndTemperature() {
+    final data = controller.currentWeather.value.current;
+    return Row(
       children: [
         Image.asset(cloudImage),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '19',
-                  style: text20Style(
-                    fontSize: 60,
-                    color: AppColor.textColor1
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${(data?.temperature2m ?? 0).floor()}',
+                    style: text20Style(
+                        fontSize: 60,
+                        color: AppColor.textColor1
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    '°C',
-                    style: text16Style(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      '°C',
+                      style: text16Style(),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Text(
-                'Rainy',
-                style: text18Style(
-                  isWeight500: true,
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: Text(
+                  weatherStatus(data?.weatherCode ?? 0),
+                  style: text18Style(
+                    isWeight500: true,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         )
       ],
     );
   }
 
-  Widget statusCard(){
+  Widget statusCard() {
+    final data = controller.currentWeather.value.current;
     return HorizontalPadding(
       child: Column(
         children: [
           itemCard(
             image: icon1,
             title: 'RainFall',
-            value: '3cm',
+            value: '${data?.rain ?? 0}mm',
           ),
           gapH(10),
           itemCard(
             image: icon2,
             title: 'Wind',
-            value: '19km/h',
+            value: '${data?.windSpeed10m ?? 0}km/h',
           ),
           gapH(10),
           itemCard(
             image: icon3,
             title: 'Humidity',
-            value: '64%',
+            value: '${data?.relativeHumidity2m ?? 0}%',
           ),
         ],
       ),
@@ -196,44 +203,71 @@ class HomeView extends GetView<HomeController> {
 
   Widget hourlyTitle() {
     return HorizontalPadding(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Today',
-                style: text16Style(
-                  fontSize: 18,
-                  isWeight600: true,
-                ),
+              Row(
+                children: [
+                  Text(
+                    'Today',
+                    style: text16Style(
+                      fontSize: 18,
+                      isWeight600: true,
+                    ),
+                  ),
+                  gapW(25),
+                  Text(
+                    'Tomorrow',
+                    style: text16Style(
+                      color: AppColor.textColor1.withOpacity(0.6),
+                    ),
+                  ),
+                ],
               ),
-              gapW(25),
-              Text(
-                'Tomorrow',
-                style: text16Style(
-                  color: AppColor.textColor1.withOpacity(0.6),
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(Routes.NEXT_DAYS,arguments: {
+                    'daily':controller.currentWeather.value.daily,
+                  });
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      'Next 7 Days',
+                      style: text16Style(
+                        color: AppColor.textColor1.withOpacity(0.6),
+                      ),
+                    ),
+                    gapW(10),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 18,
+                      color: AppColor.textColor1.withOpacity(0.6),
+                    )
+                  ],
                 ),
               ),
             ],
           ),
-          GestureDetector(
-            onTap: (){
-              Get.toNamed(Routes.NEXT_DAYS);
-            },
-            child: Row(
+          gapH(15),
+          SizedBox(
+            height: 10,
+            width: double.infinity,
+            child: Stack(
               children: [
-                Text(
-                  'Next 7 Days',
-                  style: text16Style(
-                    color: AppColor.textColor1.withOpacity(0.6),
+                Divider(color: AppColor.textColor1.withOpacity(0.6),),
+                Positioned(
+                  left: 15,
+                  child: Container(
+                    width: 30,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: AppColor.secondaryColor,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                   ),
-                ),
-                gapW(10),
-                 Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 18,
-                  color: AppColor.textColor1.withOpacity(0.6),
                 )
               ],
             ),
@@ -244,31 +278,37 @@ class HomeView extends GetView<HomeController> {
   }
 
   Widget hourlyList() {
+    final data = controller.currentWeather.value.hourly;
     return SizedBox(
       height: 120,
       child: ListView.separated(
+        itemCount: (data?.time?.length ?? 0) > 24 ? 24 : 0,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          bool isSelected = index == 2;
+          final temperature = data?.temperature2m?[index];
+          final weatherCode = data?.weatherCode?[index];
+          final time = controller.currentWeather.value.hourly?.time?[index];
+          final selected = isSelected(time: time ?? DateTime.now().toString());
           return Container(
-            padding:const  EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 20,
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: isSelected ? AppColor.white:AppColor.white.withOpacity(0.30),
+              color: selected ? AppColor.white : AppColor.white.withOpacity(
+                  0.30),
             ),
             child: Column(
               children: [
                 Text(
-                  'Now',
+                  selected ? 'Now': timeDate(time: time ?? DateTime.now().toString()),
                   style: text14Style(),
                 ),
-                Image.asset(icon4),
+                Image.asset(weatherStatusImage(weatherCode ?? 0),height: 30,width: 30,),
                 Text(
-                  '16',
+                  '${ temperature ?? 0 }',
                   style: text16Style(
                     isWeight600: true,
                   ),
@@ -280,7 +320,6 @@ class HomeView extends GetView<HomeController> {
         separatorBuilder: (context, index) {
           return gapW(15);
         },
-        itemCount: 20,
       ),
     );
   }

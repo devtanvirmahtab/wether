@@ -1,11 +1,21 @@
 import 'package:get/get.dart';
 
-class NextDaysController extends GetxController {
-  //TODO: Implement NextDaysController
+import '../../../data/current_weather_model.dart';
+import '../../home/controllers/home_controller.dart';
 
-  final count = 0.obs;
+
+class NextDaysController extends GetxController {
+  final nextDays = Daily().obs;
+  final  paradfd = 0.obs;
+
   @override
   void onInit() {
+    print('onInit');
+    final argument = Get.arguments;
+    if(argument != null){
+      nextDays.value = argument['daily'];
+    }
+    // print(homeController.currentWeather.value.daily?.toJson().toString());
     super.onInit();
   }
 
@@ -19,5 +29,4 @@ class NextDaysController extends GetxController {
     super.onClose();
   }
 
-  void increment() => count.value++;
 }
