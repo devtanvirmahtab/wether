@@ -1,4 +1,3 @@
-
 # Weather Watch
 
 Weather Watch is a Flutter app that provides weather updates based on the user's current location. This app uses the Open-Meteo API to fetch weather data, including temperature, humidity, wind speed, and other weather details. 
@@ -9,11 +8,12 @@ Weather Watch is a Flutter app that provides weather updates based on the user's
 - **Dynamic UI**: Uses animations and shimmer effects for smooth loading experiences.
 - **Elegant Typography**: Customized fonts powered by Google Fonts for a modern look.
 - **Permission Management**: Requests necessary permissions for location access.
+## video
   
 ## Screenshots
 
-![2](https://github.com/user-attachments/assets/d856a5bc-b0fe-4aea-86dd-c497f117e0af)
 ![1](https://github.com/user-attachments/assets/eea0bb04-84f8-4d1e-ae32-92d35e664d59)
+![2](https://github.com/user-attachments/assets/d856a5bc-b0fe-4aea-86dd-c497f117e0af)
 
 ## Getting Started
 
