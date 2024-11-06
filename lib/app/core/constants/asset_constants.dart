@@ -15,5 +15,6 @@ const icon4 = "${jpgPath}icon4.png";
 const icon5 = "${jpgPath}icon5.png";
 const icon6 = "${jpgPath}icon6.png";
 const icon7 = "${jpgPath}icon7.png";
+const icon8 = "${jpgPath}icon8.png";
 const menuIcon = "${jpgPath}menu.png";
 const searchIcon = "${jpgPath}search.png";

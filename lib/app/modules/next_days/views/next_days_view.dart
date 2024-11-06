@@ -82,7 +82,7 @@ class NextDaysView extends GetView<NextDaysController> {
               iconText(
                   image: icon2, text: '${data.windspeed10mMax?[1] ?? 0} km/h'),
               gapW(20),
-              iconText(image: icon3, text: '${data.temperature2mMax?[1] ?? 0}°C'),
+              iconText(image: icon8, text: '${data.temperature2mMax?[1] ?? 0}°C'),
             ],
           ),
           gapH(20),
