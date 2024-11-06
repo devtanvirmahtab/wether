@@ -32,8 +32,7 @@ Clone the repository:
 
 `flutter pub get`
 
-After that
-flutter run
+After that run the project
 
 ## Packages Used
 ```bash
