@@ -26,7 +26,7 @@ Weather Watch is a Flutter app that provides weather updates based on the user's
 Clone the repository:
    ```bash
    git clone https://github.com/devtanvirmahtab/wether.git
-
+   ```
 
 ## Run project
 
@@ -36,7 +36,7 @@ After that
 flutter run
 
 ## Packages Used
-  ```bash
+```bash
   get: ^4.6.6
   google_fonts: ^6.2.1
   location: ^7.0.1
