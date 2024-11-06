@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 
 class SplashController extends GetxController {
-  final name = 'Weather';
+  final name = 'Weather Watch';
 
   @override
   void onInit() {

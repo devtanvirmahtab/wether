@@ -4,7 +4,7 @@ const jpgPath = "assets/images/";
 const svgPath = "assets/images/svg/";
 const jsonPath = "assets/images/json/";
 
-const logoImage = "${jpgPath}bg_image.jpg";
+const logo = "${jpgPath}logo.png";
 
 
 const cloudImage = "${jpgPath}cloud.png";

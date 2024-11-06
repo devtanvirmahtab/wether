@@ -15,6 +15,22 @@ Widget gapW(double width){
   );
 }
 
+EdgeInsetsGeometry mainPadding(
+    double leftRight,
+    double topBottom, {
+      double? leftPadding,
+      double? rightPadding,
+      double? topPadding,
+      double? bottomPadding,
+    }) {
+  return EdgeInsets.only(
+    left: (leftPadding ?? leftRight),
+    right: (rightPadding ?? leftRight),
+    top: (topPadding ?? topBottom),
+    bottom: (bottomPadding ?? topBottom),
+  );
+}
+
 String formatDate({required String time}){
   DateTime gmtTime = DateTime.parse(time).toUtc();
   DateTime bangladeshTime = gmtTime.add(const Duration(hours: 6));
@@ -135,4 +151,17 @@ String weatherStatusImage(num weatherCode) {
   }
 
   return weatherCondition;
+}
+
+String greeting() {
+  final hour = DateTime.now().hour;
+  if (hour >= 0 && hour < 12) {
+    return 'Good Morning';
+  } else if (hour >= 12 && hour < 18) {
+    return 'Good Afternoon';
+  } else if (hour >= 18 && hour < 21) {
+    return 'Good Evening';
+  } else {
+    return 'Good Night';
+  }
 }

@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wether/app/core/constants/app_text_style.dart';
 import 'package:wether/app/core/wedgets/horizontal_padding.dart';
+import 'package:wether/app/core/wedgets/shimmer/shimmer_widgets.dart';
 import 'package:wether/app/routes/app_pages.dart';
+
 
 import '../../../core/constants/app_color.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/asset_constants.dart';
+import '../../../core/wedgets/shimmer/shimmer_base.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -67,10 +70,20 @@ class HomeView extends GetView<HomeController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            data?.isDay == 0 ? 'Night' : 'Day',
+            greeting(),
             style: text18Style(fontSize: 20),
           ),
-          Text(
+          gapH(10),
+          controller.loading.value? ShimmerBase(
+            child: Container(
+              height: 20,
+              width: 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white.withOpacity(0.5),
+              ),
+            ),
+          ):Text(
             formatDate(time: data?.time ?? DateTime.now().toString()),
             style: text12Style(
               color: AppColor.textColor,
@@ -95,11 +108,9 @@ class HomeView extends GetView<HomeController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${(data?.temperature2m ?? 0).floor()}',
-                    style: text20Style(
-                        fontSize: 60,
-                        color: AppColor.textColor1
-                    ),
+                    controller.tempCount.value.toString(),
+                    style:
+                        text20Style(fontSize: 60, color: AppColor.textColor1),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
@@ -112,7 +123,16 @@ class HomeView extends GetView<HomeController> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 12),
-                child: Text(
+                child:  controller.loading.value? ShimmerBase(
+                  child: Container(
+                    height: 18,
+                    width: 70,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.white.withOpacity(0.5),
+                    ),
+                  ),
+                ):Text(
                   weatherStatus(data?.weatherCode ?? 0),
                   style: text18Style(
                     isWeight500: true,
@@ -191,7 +211,16 @@ class HomeView extends GetView<HomeController> {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 30),
-            child: Text(
+            child: controller.loading.value? ShimmerBase(
+              child: Container(
+                height: 18,
+                width: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white.withOpacity(0.5),
+                  ),
+              ),
+            ): Text(
               value,
               style: text14Style(),
             ),
@@ -228,9 +257,11 @@ class HomeView extends GetView<HomeController> {
               ),
               GestureDetector(
                 onTap: () {
-                  Get.toNamed(Routes.NEXT_DAYS,arguments: {
-                    'daily':controller.currentWeather.value.daily,
-                  });
+                  if(controller.currentWeather.value.daily?.time?.isNotEmpty ?? false){
+                    Get.toNamed(Routes.NEXT_DAYS, arguments: {
+                      'daily': controller.currentWeather.value.daily,
+                    });
+                  }
                 },
                 child: Row(
                   children: [
@@ -257,7 +288,9 @@ class HomeView extends GetView<HomeController> {
             width: double.infinity,
             child: Stack(
               children: [
-                Divider(color: AppColor.textColor1.withOpacity(0.6),),
+                Divider(
+                  color: AppColor.textColor1.withOpacity(0.6),
+                ),
                 Positioned(
                   left: 15,
                   child: Container(
@@ -279,6 +312,9 @@ class HomeView extends GetView<HomeController> {
 
   Widget hourlyList() {
     final data = controller.currentWeather.value.hourly;
+    if (controller.loading.value) {
+      return ShimmerWidgets().hourlyList();
+    }
     return SizedBox(
       height: 120,
       child: ListView.separated(
@@ -297,18 +333,24 @@ class HomeView extends GetView<HomeController> {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: selected ? AppColor.white : AppColor.white.withOpacity(
-                  0.30),
+              color:
+                  selected ? AppColor.white : AppColor.white.withOpacity(0.30),
             ),
             child: Column(
               children: [
                 Text(
-                  selected ? 'Now': timeDate(time: time ?? DateTime.now().toString()),
+                  selected
+                      ? 'Now'
+                      : timeDate(time: time ?? DateTime.now().toString()),
                   style: text14Style(),
                 ),
-                Image.asset(weatherStatusImage(weatherCode ?? 0),height: 30,width: 30,),
+                Image.asset(
+                  weatherStatusImage(weatherCode ?? 0),
+                  height: 30,
+                  width: 30,
+                ),
                 Text(
-                  '${ temperature ?? 0 }',
+                  '${temperature ?? 0}',
                   style: text16Style(
                     isWeight600: true,
                   ),
